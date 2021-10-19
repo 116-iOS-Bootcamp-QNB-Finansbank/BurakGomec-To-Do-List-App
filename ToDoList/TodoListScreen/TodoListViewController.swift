@@ -7,12 +7,38 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
+//Reference to Presenter
+
+protocol AnyView : AnyObject {
+    var presenter: AnyPresenter? { get set }
+    
+    func getTodoList(with todos: [TodoEntity])
+    func getTodoList(with error: Error)
+}
+
+class TodoListViewController: UIViewController, AnyView {
+    @IBOutlet weak var tableView: UITableView!
+    
+    var presenter: AnyPresenter?
+    var todoArray : [TodoEntity] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareNavigationBar()
         prepareSearchController()
+        presenter?.viewDidLoad()
+    }
+    
+    func getTodoList(with todos: [TodoEntity]) {
+        DispatchQueue.main.async {
+            self.todoArray = []
+            self.todoArray = todos
+            self.tableView.reloadData()
+        }
+    }
+    
+    func getTodoList(with error: Error) {
+        print(error)//TODO: UIAlertController
     }
     
     private func prepareNavigationBar(){
@@ -23,9 +49,9 @@ class ListViewController: UIViewController {
     
         let leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle")!, style: .done, target: self, action: nil)
         let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewToDoItem))
-//        
-//        rightBarButtonItem.tintColor = .red
-//        leftBarButtonItem.tintColor = .red
+       
+        rightBarButtonItem.tintColor = .red
+        leftBarButtonItem.tintColor = .red
         
         self.navigationItem.rightBarButtonItem = rightBarButtonItem
         self.navigationItem.leftBarButtonItem = leftBarButtonItem
@@ -36,31 +62,33 @@ class ListViewController: UIViewController {
         self.navigationItem.searchController = searchBar
     }
     
-    
-    
     @objc func addNewToDoItem(){
-        self.present(DetailViewController(), animated: true, completion: nil)
+        self.presenter?.addNewToDoItem()
     }
     
+    deinit {
+        print("\(self) deinit")
+    }
 
 }
 
-extension ListViewController: UITableViewDataSource{
+extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return todoArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = "Burak"
+        cell.textLabel?.text = todoArray[indexPath.row].title
         return cell
     }
 }
 
-extension ListViewController: UITableViewDelegate {
+extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //presenter?.didSelectRow(at: indexPath)
+        presenter?.didSelectRow(with: todoArray[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
-        self.present(DetailViewController(), animated: true, completion: nil)
     }
 //    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 //
