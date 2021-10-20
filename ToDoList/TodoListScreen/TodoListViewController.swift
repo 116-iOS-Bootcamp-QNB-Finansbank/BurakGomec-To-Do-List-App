@@ -20,7 +20,7 @@ class TodoListViewController: UIViewController, AnyView {
     @IBOutlet weak var tableView: UITableView!
     
     var presenter: AnyPresenter?
-    var todoArray : [TodoEntity] = []
+    private var todoArray : [TodoEntity] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +38,7 @@ class TodoListViewController: UIViewController, AnyView {
     }
     
     func getTodoList(with error: Error) {
-        print(error)//TODO: UIAlertController
+        self.showBasicAlert(title: "Error", message: "An error occurred while retrieving the todo list")
     }
     
     private func prepareNavigationBar(){

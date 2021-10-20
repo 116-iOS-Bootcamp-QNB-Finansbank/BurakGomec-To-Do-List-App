@@ -12,6 +12,7 @@ protocol DataManagerProtocol {
     func getTodoList()->Result<[TodoEntity], Error>
     func updateTodo()
     func deleteTodo()
+    func saveTodo(title: String, detail: String?, completionTime:Date)
 }
 
 class CoreDataManager: DataManagerProtocol{
@@ -45,7 +46,7 @@ class CoreDataManager: DataManagerProtocol{
         //
     }
     
-    func saveTodo(title: String, detail: String?, completionTime:Date) {
+    func saveTodo(title: String, detail: String?, completionTime:Date){
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let persistantContainer = appDelegate.persistentContainer
         let context = persistantContainer.viewContext
@@ -54,13 +55,13 @@ class CoreDataManager: DataManagerProtocol{
         entity.id = UUID()
         entity.title = title
         entity.detail = detail
-        entity.completionTime = completionTime
-        
+        //entity.completionTime = completionTime
         do {
             try context.save()
         }
         catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
+            //TODO: error
         }
     
     }
