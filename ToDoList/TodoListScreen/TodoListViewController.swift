@@ -27,6 +27,16 @@ class TodoListViewController: UIViewController, AnyView {
         prepareNavigationBar()
         prepareSearchController()
         presenter?.viewDidLoad()
+        createNotificationObserver()
+    }
+
+    private func createNotificationObserver(){
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(updateTodoList), name: .updateTodoList, object: nil)
+    }
+    
+    @objc func updateTodoList(){
+        presenter?.viewDidLoad()
     }
     
     func getTodoList(with todos: [TodoEntity]) {
@@ -66,15 +76,17 @@ class TodoListViewController: UIViewController, AnyView {
         self.presenter?.addNewToDoItem()
     }
     
+    private func removeTodoObserver(){
+        NotificationCenter.default.removeObserver(self, name: .updateTodoList, object: nil)
+    }
+    
     deinit {
         print("\(self) deinit")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        presenter?.viewDidLoad()
+        
     }
 }
 
+//MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoArray.count
@@ -87,6 +99,7 @@ extension TodoListViewController: UITableViewDataSource{
     }
 }
 
+//MARK: - UITableViewDelegate
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

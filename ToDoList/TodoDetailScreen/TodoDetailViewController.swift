@@ -34,7 +34,6 @@ class TodoDetailViewController: UIViewController {
         hideKeyboard()
         
         view.backgroundColor = UIColor.Custom.generalBackgroundColor
-        
         viewModel?.viewDidLoad()
     }
     
@@ -75,8 +74,12 @@ class TodoDetailViewController: UIViewController {
     @objc func saveTodo(){
         guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else { return self.showBasicAlert(title: "Error", message: "Please fill the Title field")}
         viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
-        
+        sendNotificationForTodoUpdate()
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    private func sendNotificationForTodoUpdate(){
+        NotificationCenter.default.post(name: .updateTodoList, object: nil)
     }
     
     @objc func cancelTheEditing() {
@@ -127,15 +130,15 @@ extension TodoDetailViewController {
     }
 }
 
+//MARK: - TodoDetailViewModelDelegate
 extension TodoDetailViewController: TodoDetailViewModelDelegate{
     func showTodoDetail(todo: TodoEntity) {
         self.titleTextField.text = todo.title
         self.detailTextField.text = todo.detail
-        self.datePicker.date = todo.completionTime //?
-        print(todo.completionTime)
+        self.datePicker.date = todo.completionTime //TODO:
     }
     
     func showErrorAlert(error: String) {
-     
+        self.showBasicAlert(title: "Error", message: "An error occurred while retrieving the todo item")
     }
 }

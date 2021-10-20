@@ -55,7 +55,7 @@ class CoreDataManager: DataManagerProtocol{
         entity.id = UUID()
         entity.title = title
         entity.detail = detail
-        //entity.completionTime = completionTime
+        entity.completionTime = completionTime
         do {
             try context.save()
         }

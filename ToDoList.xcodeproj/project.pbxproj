@@ -20,6 +20,7 @@
 		679A3F902719ADFC00B7047F /* TodoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 679A3F8E2719ADFC00B7047F /* TodoDetailViewController.xib */; };
 		679A3F932719C15700B7047F /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679A3F922719C15700B7047F /* UIViewController+Extension.swift */; };
 		67A9E643271C401A00F78FE0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9E642271C401A00F78FE0 /* CoreDataManager.swift */; };
+		67C31EFD27209548003C9B95 /* Notification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C31EFC27209548003C9B95 /* Notification+Extension.swift */; };
 		67E8EEF6271ECB9300D06C5B /* TodoEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E8EEF5271ECB9300D06C5B /* TodoEntity.swift */; };
 		67E8EEF8271ECC9B00D06C5B /* TodoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E8EEF7271ECC9B00D06C5B /* TodoPresenter.swift */; };
 		67E8EEFA271ECD3100D06C5B /* TodoInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E8EEF9271ECD3100D06C5B /* TodoInteractor.swift */; };
@@ -67,6 +68,7 @@
 		679A3F8E2719ADFC00B7047F /* TodoDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TodoDetailViewController.xib; sourceTree = "<group>"; };
 		679A3F922719C15700B7047F /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		67A9E642271C401A00F78FE0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		67C31EFC27209548003C9B95 /* Notification+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Extension.swift"; sourceTree = "<group>"; };
 		67E8EEF5271ECB9300D06C5B /* TodoEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoEntity.swift; sourceTree = "<group>"; };
 		67E8EEF7271ECC9B00D06C5B /* TodoPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoPresenter.swift; sourceTree = "<group>"; };
 		67E8EEF9271ECD3100D06C5B /* TodoInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoInteractor.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			children = (
 				679A3F922719C15700B7047F /* UIViewController+Extension.swift */,
 				6703DB0B271C68CA00FE8EA2 /* UIColor+Extension.swift */,
+				67C31EFC27209548003C9B95 /* Notification+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 				67E8EEFF271F4DEF00D06C5B /* TodoDetailViewModel.swift in Sources */,
 				6779F8492718BC5F0047F021 /* SceneDelegate.swift in Sources */,
 				67E8EEFA271ECD3100D06C5B /* TodoInteractor.swift in Sources */,
+				67C31EFD27209548003C9B95 /* Notification+Extension.swift in Sources */,
 				679A3F8F2719ADFC00B7047F /* TodoDetailViewController.swift in Sources */,
 				6779F8512718BC5F0047F021 /* ToDoList.xcdatamodeld in Sources */,
 				67A9E643271C401A00F78FE0 /* CoreDataManager.swift in Sources */,
