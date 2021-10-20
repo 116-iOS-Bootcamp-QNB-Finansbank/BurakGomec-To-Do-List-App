@@ -24,7 +24,6 @@ class CoreDataManager: DataManagerProtocol{
         let context = persistantContainer.viewContext
         
         let fetchRequest: NSFetchRequest<CoreDataTodoEntity> = CoreDataTodoEntity.fetchRequest()
-        
         do{
             let savedTodos = try context.fetch(fetchRequest)
             for savedTodo in savedTodos{
@@ -37,7 +36,7 @@ class CoreDataManager: DataManagerProtocol{
             return .success(todoArray)
         }
         catch let error as NSError{
-            print("Could not save. \(error), \(error.userInfo)")
+            print("Could not read. \(error), \(error.userInfo)")
             return .failure(error)
         }
     }
@@ -46,8 +45,24 @@ class CoreDataManager: DataManagerProtocol{
         //
     }
     
-    func saveTodo() {
-        //
+    func saveTodo(title: String, detail: String?, completionTime:Date) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let persistantContainer = appDelegate.persistentContainer
+        let context = persistantContainer.viewContext
+        
+        let entity = CoreDataTodoEntity(context: context)
+        entity.id = UUID()
+        entity.title = title
+        entity.detail = detail
+        entity.completionTime = completionTime
+        
+        do {
+            try context.save()
+        }
+        catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    
     }
     
     func updateTodo() {

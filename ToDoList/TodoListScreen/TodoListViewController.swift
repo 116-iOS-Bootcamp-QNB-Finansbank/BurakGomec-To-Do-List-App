@@ -70,6 +70,9 @@ class TodoListViewController: UIViewController, AnyView {
         print("\(self) deinit")
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        presenter?.viewDidLoad()
+    }
 }
 
 extension TodoListViewController: UITableViewDataSource{
@@ -86,11 +89,10 @@ extension TodoListViewController: UITableViewDataSource{
 
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //presenter?.didSelectRow(at: indexPath)
-        presenter?.didSelectRow(with: todoArray[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
+        presenter?.didSelectRow(todo: todoArray[indexPath.row])
     }
 //    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//
+//      //TODO:
 //    }
 }
