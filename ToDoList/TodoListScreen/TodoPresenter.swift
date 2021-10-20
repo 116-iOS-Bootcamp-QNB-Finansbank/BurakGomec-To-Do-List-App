@@ -36,7 +36,6 @@ class TodoPresenter: AnyPresenter{
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>) {
         switch result {
         case .success(let todoList):
-            print(todoList)
             view?.getTodoList(with: todoList)
         case .failure(let error):
             view?.getTodoList(with: error)

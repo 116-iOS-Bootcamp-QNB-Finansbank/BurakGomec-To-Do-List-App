@@ -21,5 +21,11 @@ extension UIColor {
                 return trait.userInterfaceStyle == .dark ? UIColor.black : UIColor.tertiarySystemGroupedBackground
             }
         }
+        
+        static var basicAlertOkButtonTextColor : UIColor {
+            return UIColor.init {(trait) -> UIColor in
+                return trait.userInterfaceStyle == .dark ? UIColor.white : UIColor.black
+            }
+        }
     }
 }

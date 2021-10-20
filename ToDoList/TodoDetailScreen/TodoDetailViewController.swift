@@ -73,8 +73,9 @@ class TodoDetailViewController: UIViewController {
     
     
     @objc func saveTodo(){
-        guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else { return } //UIAlert
+        guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else { return self.showBasicAlert(title: "Error", message: "Please fill the Title field")}
         viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
+        
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -130,7 +131,8 @@ extension TodoDetailViewController: TodoDetailViewModelDelegate{
     func showTodoDetail(todo: TodoEntity) {
         self.titleTextField.text = todo.title
         self.detailTextField.text = todo.detail
-        //TODO-Date Components
+        self.datePicker.date = todo.completionTime //?
+        print(todo.completionTime)
     }
     
     func showErrorAlert(error: String) {

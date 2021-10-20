@@ -55,7 +55,6 @@ class TodoRouter: AnyRouter {
     func navigate(to route: TodoRoute) {
         switch route {
         case .showTodoDetail(let todo):
-            //TODO: Pass todo data
             entry?.present(TodoDetailBuilder.build(with: todo), animated: true, completion: nil)
         case .addNewTodo:
             entry?.present(TodoDetailBuilder.build(), animated: true, completion: nil)

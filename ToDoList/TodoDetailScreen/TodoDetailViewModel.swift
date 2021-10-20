@@ -42,9 +42,20 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
     }
     
     func saveTodo(title: String, detail: String?, completionTime: Date) {
-        print("will come")
-        print(title, detail, completionTime)
-        CoreDataManager().saveTodo(title: title, detail: detail, completionTime: completionTime)
+        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: completionTime)
+        
+        let componentYear = components.year
+        let componentMonth = components.month
+        let componentDay = components.day
+        let componentHour = components.hour!
+        let componentMinute = components.minute!
+        
+        print("Year: \(componentYear), month: \(componentMonth), day: \(componentDay), hour: \(componentHour), \(componentMinute)")
+        
+        let date = Calendar.current.date(from: components)
+        
+        
+        try? CoreDataManager().saveTodo(title: title, detail: detail, completionTime: completionTime)
     }
     
     
