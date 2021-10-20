@@ -14,8 +14,7 @@ protocol AnyPresenter{
     var interactor: AnyInteractor? { get set}
     
     func viewDidLoad()
-    func didSelectRow(at indexPath: IndexPath)
-    func didSelectRow(with todo: TodoEntity)
+    func didSelectRow(todo: TodoEntity)
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>)
     func addNewToDoItem()
 }
@@ -29,18 +28,15 @@ class TodoPresenter: AnyPresenter{
         interactor?.getTodoList()
     }
     
-    func didSelectRow(at indexPath: IndexPath) {
-        router?.navigate(to: .showTodoDetail(TodoEntity(id: UUID(), title: "XX", detail: "YY", completionTime: Date(timeIntervalSince1970: 121))))
-    }
-    
-    func didSelectRow(with todo: TodoEntity) {
-        router?.navigate(to: .showTodoDetail(TodoEntity(id: UUID(), title: "XX", detail: "YY", completionTime: Date(timeIntervalSince1970: 121))))
+    func didSelectRow(todo: TodoEntity) {
+        router?.navigate(to: .showTodoDetail(TodoEntity(id: todo.id, title:todo.title, detail: todo.detail, completionTime: todo.completionTime)))
     }
     
 
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>) {
         switch result {
         case .success(let todoList):
+            print(todoList)
             view?.getTodoList(with: todoList)
         case .failure(let error):
             view?.getTodoList(with: error)

@@ -18,10 +18,7 @@ class TodoInteractor: AnyInteractor {
     var presenter: AnyPresenter?
     
     func getTodoList() {
-        //CoreDataManager().saveTodo()
         let result = CoreDataManager().getTodoList()
-        presenter?.interactorDidFetchTodoList(with: result)
+        self.presenter?.interactorDidFetchTodoList(with: result)
     }
-    
-    
 }

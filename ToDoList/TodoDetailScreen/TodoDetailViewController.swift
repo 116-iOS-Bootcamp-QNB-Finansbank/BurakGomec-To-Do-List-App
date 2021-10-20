@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class TodoDetailViewController: UIViewController {
     
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var generalView: UIView!
@@ -15,6 +15,12 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var detailTextField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
     private var discardChangesControl : Bool = false
+    
+    var viewModel: TodoDetailViewModelProtocol?{
+        didSet{
+            viewModel?.delegate = self
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +34,8 @@ class DetailViewController: UIViewController {
         hideKeyboard()
         
         view.backgroundColor = UIColor.Custom.generalBackgroundColor
+        
+        viewModel?.viewDidLoad()
     }
     
     private func hideKeyboard() {
@@ -39,7 +47,7 @@ class DetailViewController: UIViewController {
         navigationBar.topItem?.title = "Details"
         let leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(cancelTheEditing))
         leftBarButtonItem.tintColor = .red
-        let rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItem.Style.plain, target: self, action: nil)
+        let rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItem.Style.plain, target: self, action: #selector(saveTodo))
         rightBarButtonItem.tintColor = .red
         
         self.navigationBar.topItem?.leftBarButtonItem = leftBarButtonItem
@@ -54,12 +62,20 @@ class DetailViewController: UIViewController {
     
     private func prepareDatePicker() {
         self.datePicker.tintColor = .red
+        self.datePicker.locale = Locale(identifier: "en_GB")
     }
     
     private func prepareTextFields() {
         let font = UIFont(name: "Charter-Black", size: 18)!
         titleTextField.font = font
         detailTextField.font = font
+    }
+    
+    
+    @objc func saveTodo(){
+        guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else { return } //UIAlert
+        viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func cancelTheEditing() {
@@ -83,7 +99,7 @@ class DetailViewController: UIViewController {
 }
 
 //MARK: - UITextFieldDelegate
-extension DetailViewController : UITextFieldDelegate {
+extension TodoDetailViewController : UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switchToNextTextField(textField: textField)
@@ -104,8 +120,20 @@ extension DetailViewController : UITextFieldDelegate {
     }
 }
 
-extension DetailViewController {
+extension TodoDetailViewController {
     override func viewWillDisappear(_ animated: Bool) {
        //TODO: UIAlertController?
+    }
+}
+
+extension TodoDetailViewController: TodoDetailViewModelDelegate{
+    func showTodoDetail(todo: TodoEntity) {
+        self.titleTextField.text = todo.title
+        self.detailTextField.text = todo.detail
+        //TODO-Date Components
+    }
+    
+    func showErrorAlert(error: String) {
+     
     }
 }
