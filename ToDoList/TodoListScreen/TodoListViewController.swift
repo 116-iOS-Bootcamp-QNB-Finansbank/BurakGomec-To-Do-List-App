@@ -27,6 +27,16 @@ class TodoListViewController: UIViewController, AnyView {
         prepareNavigationBar()
         prepareSearchController()
         presenter?.viewDidLoad()
+        createNotificationObserver()
+    }
+
+    private func createNotificationObserver(){
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(updateTodoList), name: .updateTodoList, object: nil)
+    }
+    
+    @objc func updateTodoList(){
+        presenter?.viewDidLoad()
     }
     
     func getTodoList(with todos: [TodoEntity]) {
@@ -66,15 +76,17 @@ class TodoListViewController: UIViewController, AnyView {
         self.presenter?.addNewToDoItem()
     }
     
+    private func removeTodoObserver(){
+        NotificationCenter.default.removeObserver(self, name: .updateTodoList, object: nil)
+    }
+    
     deinit {
         print("\(self) deinit")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        presenter?.viewDidLoad()
+        
     }
 }
 
+//MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoArray.count
@@ -87,12 +99,28 @@ extension TodoListViewController: UITableViewDataSource{
     }
 }
 
+//MARK: - UITableViewDelegate
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         presenter?.didSelectRow(todo: todoArray[indexPath.row])
     }
-//    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//      //TODO:
-//    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: nil) { (_, _, completion) in
+            self.presenter?.deleteTodo(todo: self.todoArray[indexPath.row])
+            print(self.todoArray[indexPath.row].id)
+            self.todoArray.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        
+        action.image = UIImage(systemName: "trash.fill") //SF Symbols icon
+        let swipeActionConfiguration = UISwipeActionsConfiguration(actions: [action])
+        return swipeActionConfiguration
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
 }

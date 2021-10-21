@@ -14,7 +14,12 @@ class TodoDetailViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var detailTextField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
-    private var discardChangesControl : Bool = false
+    
+    private var newTodoControl: Bool = true
+    private var bufferTitleText: String = ""
+    private var bufferDetailText: String? = ""
+    private var bufferDate: Date = Date()
+    private var selectedTodo: TodoEntity?
     
     var viewModel: TodoDetailViewModelProtocol?{
         didSet{
@@ -26,15 +31,14 @@ class TodoDetailViewController: UIViewController {
         super.viewDidLoad()
         titleTextField.delegate = self
         detailTextField.delegate = self
-        prepareNavigationBar()
         
+        prepareNavigationBar()
         prepareDatePicker()
         prepareGeneralView()
         prepareTextFields()
         hideKeyboard()
         
         view.backgroundColor = UIColor.Custom.generalBackgroundColor
-        
         viewModel?.viewDidLoad()
     }
     
@@ -47,7 +51,7 @@ class TodoDetailViewController: UIViewController {
         navigationBar.topItem?.title = "Details"
         let leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(cancelTheEditing))
         leftBarButtonItem.tintColor = .red
-        let rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItem.Style.plain, target: self, action: #selector(saveTodo))
+        let rightBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(saveTodo))
         rightBarButtonItem.tintColor = .red
         
         self.navigationBar.topItem?.leftBarButtonItem = leftBarButtonItem
@@ -73,14 +77,35 @@ class TodoDetailViewController: UIViewController {
     
     
     @objc func saveTodo(){
-        guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else { return self.showBasicAlert(title: "Error", message: "Please fill the Title field")}
-        viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
-        
+        guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else {
+            return self.showBasicAlert(title: "Error", message: "Please fill the Title field")
+            
+        }
+        if newTodoControl{
+            viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
+            sendNotificationForTodoUpdate()
+        }
+        else if checkTodoItemUpdate(){
+            viewModel?.updateTodo(todo: selectedTodo!, newTodo: TodoEntity(id: selectedTodo!.id, title: titleTextField.text ?? bufferTitleText,
+                                                                           detail: detailTextField.text, completionTime: datePicker.date))
+            sendNotificationForTodoUpdate()
+        }
         self.dismiss(animated: true, completion: nil)
     }
     
+    private func checkTodoItemUpdate()->Bool{
+        if bufferTitleText != titleTextField.text || bufferDetailText != detailTextField.text || bufferDate != datePicker.date {
+            return true
+        }
+        return false
+    }
+    
+    private func sendNotificationForTodoUpdate(){
+        NotificationCenter.default.post(name: .updateTodoList, object: nil)
+    }
+    
     @objc func cancelTheEditing() {
-        if discardChangesControl {
+        if checkTodoItemUpdate() {
             self.showDiscardChangesAlert { result in
                 result == true ? self.dismiss(animated: true, completion: nil) : nil
             }
@@ -115,10 +140,6 @@ extension TodoDetailViewController : UITextFieldDelegate {
             detailTextField.resignFirstResponder()
         }
     }
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        discardChangesControl = true
-        return true
-    }
 }
 
 extension TodoDetailViewController {
@@ -127,15 +148,22 @@ extension TodoDetailViewController {
     }
 }
 
+//MARK: - TodoDetailViewModelDelegate
 extension TodoDetailViewController: TodoDetailViewModelDelegate{
     func showTodoDetail(todo: TodoEntity) {
+        newTodoControl = false
+        selectedTodo = todo
+        
         self.titleTextField.text = todo.title
         self.detailTextField.text = todo.detail
-        self.datePicker.date = todo.completionTime //?
-        print(todo.completionTime)
+        self.datePicker.date = todo.completionTime //TODO:
+        
+        self.bufferTitleText = todo.title
+        self.bufferDetailText = todo.detail
+        self.bufferDate = todo.completionTime
     }
     
     func showErrorAlert(error: String) {
-     
+        self.showBasicAlert(title: "Error", message: "An error occurred while retrieving the todo item")
     }
 }
