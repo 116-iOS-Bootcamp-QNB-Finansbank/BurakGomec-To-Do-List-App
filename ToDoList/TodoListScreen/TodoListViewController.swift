@@ -21,6 +21,8 @@ class TodoListViewController: UIViewController, AnyView {
     
     var presenter: AnyPresenter?
     private var todoArray : [TodoEntity] = []
+    private var filteredTodoArray: [TodoEntity] = []
+    private var searchBarControl = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,8 +70,11 @@ class TodoListViewController: UIViewController, AnyView {
     }
     
     private func prepareSearchController(){
-        let searchBar = UISearchController(searchResultsController: nil)
-        self.navigationItem.searchController = searchBar
+        let searchController = UISearchController(searchResultsController: nil)
+        self.navigationItem.searchController = searchController
+        searchController.obscuresBackgroundDuringPresentation = true
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.tintColor = .red
     }
     
     @objc func addNewToDoItem(){
@@ -89,12 +94,12 @@ class TodoListViewController: UIViewController, AnyView {
 //MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoArray.count
+        return searchBarControl == false ? todoArray.count : filteredTodoArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = todoArray[indexPath.row].title
+        cell.textLabel?.text = searchBarControl == false ? todoArray[indexPath.row].title : filteredTodoArray[indexPath.row].title
         return cell
     }
 }
@@ -109,7 +114,6 @@ extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: nil) { (_, _, completion) in
             self.presenter?.deleteTodo(todo: self.todoArray[indexPath.row])
-            print(self.todoArray[indexPath.row].id)
             self.todoArray.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
             completion(true)
@@ -122,5 +126,24 @@ extension TodoListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
+    }
+}
+
+extension TodoListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let text = searchController.searchBar.text
+        
+        if text?.trimmingCharacters(in: .whitespaces) == ""{
+            searchBarControl = false
+            tableView.reloadData()
+        }
+        else {
+            searchBarControl = true
+            guard let searchText = searchController.searchBar.text else { return }
+            filteredTodoArray = todoArray.filter { (todo) in
+                return todo.title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            }
+            tableView.reloadData()
+        }
     }
 }
