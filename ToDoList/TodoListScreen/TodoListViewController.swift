@@ -105,7 +105,22 @@ extension TodoListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         presenter?.didSelectRow(todo: todoArray[indexPath.row])
     }
-//    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//      //TODO:
-//    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: nil) { (_, _, completion) in
+            self.presenter?.deleteTodo(todo: self.todoArray[indexPath.row])
+            print(self.todoArray[indexPath.row].id)
+            self.todoArray.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        
+        action.image = UIImage(systemName: "trash.fill") //SF Symbols icon
+        let swipeActionConfiguration = UISwipeActionsConfiguration(actions: [action])
+        return swipeActionConfiguration
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
 }

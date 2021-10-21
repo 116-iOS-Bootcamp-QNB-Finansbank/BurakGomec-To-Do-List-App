@@ -17,6 +17,7 @@ protocol AnyPresenter{
     func didSelectRow(todo: TodoEntity)
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>)
     func addNewToDoItem()
+    func deleteTodo(todo: TodoEntity)
 }
 
 class TodoPresenter: AnyPresenter{
@@ -45,6 +46,11 @@ class TodoPresenter: AnyPresenter{
     func addNewToDoItem() {
         router?.navigate(to: .addNewTodo)
     }
+    
+    func deleteTodo(todo: TodoEntity) {
+        interactor?.deleteTodoFromCoreData(todo: todo)
+    }
+    
     
     
 }

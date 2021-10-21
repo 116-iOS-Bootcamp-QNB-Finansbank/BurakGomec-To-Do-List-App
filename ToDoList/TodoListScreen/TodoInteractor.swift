@@ -12,6 +12,7 @@ protocol AnyInteractor {
     var presenter: AnyPresenter? { get set}
     
     func getTodoList()
+    func deleteTodoFromCoreData(todo: TodoEntity)
 }
 
 class TodoInteractor: AnyInteractor {
@@ -21,4 +22,12 @@ class TodoInteractor: AnyInteractor {
         let result = CoreDataManager().getTodoList()
         self.presenter?.interactorDidFetchTodoList(with: result)
     }
+    
+    func deleteTodoFromCoreData(todo: TodoEntity) {
+        CoreDataManager().deleteTodo(todo: todo)
+    }
+}
+
+enum OperationClass {
+    case CoreDataManager
 }

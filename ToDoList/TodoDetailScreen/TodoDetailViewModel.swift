@@ -16,10 +16,10 @@ protocol TodoDetailViewModelProtocol {
     var delegate: TodoDetailViewModelDelegate? { get set}
     func viewDidLoad()
     func saveTodo(title: String, detail: String?, completionTime:Date)
+    func updateTodo(todo: TodoEntity, newTodo: TodoEntity)
 }
 
 class TodoDetailViewModel: TodoDetailViewModelProtocol {
-
     var delegate: TodoDetailViewModelDelegate?
     
     private var todo: TodoEntity?
@@ -56,6 +56,11 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
 //
          CoreDataManager().saveTodo(title: title, detail: detail, completionTime: completionTime)
     }
+    
+    func updateTodo(todo: TodoEntity, newTodo: TodoEntity) {
+        CoreDataManager().updateTodo(todo: todo, newTodo: newTodo)
+    }
+    
     
     
 }
