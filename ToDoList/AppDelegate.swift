@@ -14,10 +14,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        askUserPermissionForLocalNotification()
         return true
     }
-
+    
+    //MARK: - Notification Request Authorization
+    private func askUserPermissionForLocalNotification(){
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { result, error in
+            if result && error == nil {
+                //Permission is okey
+            }
+        }
+    }
+    
+    
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

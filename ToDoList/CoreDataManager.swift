@@ -12,7 +12,7 @@ protocol DataManagerProtocol {
     func getTodoList()->Result<[TodoEntity], Error>
     func updateTodo(todo: TodoEntity, newTodo: TodoEntity)
     func deleteTodo(todo: TodoEntity)
-    func saveTodo(title: String, detail: String?, completionTime:Date)
+    func saveTodo(newTodo: TodoEntity)
 }
 
 enum CoreDataAttributeKeys : String{
@@ -79,16 +79,16 @@ class CoreDataManager: DataManagerProtocol{
         }
     }
     
-    func saveTodo(title: String, detail: String?, completionTime:Date){
+    func saveTodo(newTodo: TodoEntity){
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let persistantContainer = appDelegate.persistentContainer
         let context = persistantContainer.viewContext
         
         let entity = CoreDataTodoEntity(context: context)
-        entity.id = UUID()
-        entity.title = title
-        entity.detail = detail
-        entity.completionTime = completionTime
+        entity.id = newTodo.id
+        entity.title = newTodo.title
+        entity.detail = newTodo.detail
+        entity.completionTime = newTodo.completionTime
         do {
             try context.save()
         }
