@@ -13,6 +13,7 @@ protocol AnyInteractor {
     
     func getTodoList()
     func deleteTodoFromCoreData(todo: TodoEntity)
+    func deleteTodoNotification(todo: TodoEntity)
 }
 
 class TodoInteractor: AnyInteractor {
@@ -26,8 +27,8 @@ class TodoInteractor: AnyInteractor {
     func deleteTodoFromCoreData(todo: TodoEntity) {
         CoreDataManager().deleteTodo(todo: todo)
     }
-}
-
-enum OperationClass {
-    case CoreDataManager
+    
+    func deleteTodoNotification(todo: TodoEntity) {
+        LocalNotificationManager().removeScheduledNotification(todo: todo)
+    }
 }

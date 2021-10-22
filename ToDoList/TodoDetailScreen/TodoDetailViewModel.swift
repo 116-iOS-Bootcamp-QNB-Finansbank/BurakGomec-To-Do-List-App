@@ -54,7 +54,8 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
     
     func updateTodo(todo: TodoEntity, newTodo: TodoEntity) {
         CoreDataManager().updateTodo(todo: todo, newTodo: newTodo)
-        
+        LocalNotificationManager().removeScheduledNotification(todo: todo)
+        LocalNotificationManager().scheduleNotification(todo: newTodo)
     }
     
     

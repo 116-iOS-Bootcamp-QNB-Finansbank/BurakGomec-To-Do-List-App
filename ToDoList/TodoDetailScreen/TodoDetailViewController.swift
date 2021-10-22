@@ -82,7 +82,6 @@ class TodoDetailViewController: UIViewController {
             
         }
         if newTodoControl{
-            //viewModel?.saveTodo(newTodo: TodoEntity())
             viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
             sendNotificationForTodoUpdate()
         }
@@ -157,7 +156,7 @@ extension TodoDetailViewController: TodoDetailViewModelDelegate{
         
         self.titleTextField.text = todo.title
         self.detailTextField.text = todo.detail
-        self.datePicker.date = todo.completionTime //TODO:
+        self.datePicker.date = todo.completionTime
         
         self.bufferTitleText = todo.title
         self.bufferDetailText = todo.detail
