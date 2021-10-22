@@ -49,6 +49,7 @@ class TodoPresenter: AnyPresenter{
     
     func deleteTodo(todo: TodoEntity) {
         interactor?.deleteTodoFromCoreData(todo: todo)
+        interactor?.deleteTodoNotification(todo: todo)
     }
     
     

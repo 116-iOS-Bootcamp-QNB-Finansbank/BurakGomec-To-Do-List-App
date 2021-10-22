@@ -17,7 +17,7 @@ struct NotificationModel {
 
 protocol NotificationManagerProtocol {
     func scheduleNotification(todo: TodoEntity)
-    func removeScheduledNotification()
+    func removeScheduledNotification(todo: TodoEntity)
 }
 
 class LocalNotificationManager: NotificationManagerProtocol{
@@ -44,8 +44,9 @@ class LocalNotificationManager: NotificationManagerProtocol{
         notification = NotificationModel(id: todo.id, title: todo.title, detail: todo.detail, dateComponents: components, repeats: false)
     }
     
-    func removeScheduledNotification() {
-        
+    func removeScheduledNotification(todo: TodoEntity) {
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
     }
     
 }
