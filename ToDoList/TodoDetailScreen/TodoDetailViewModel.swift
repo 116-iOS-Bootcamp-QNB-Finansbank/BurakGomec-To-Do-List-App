@@ -42,23 +42,19 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
     }
     
     func saveTodo(title: String, detail: String?, completionTime: Date) {
-//        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: completionTime)
-//
-//        let componentYear = components.year
-//        let componentMonth = components.month
-//        let componentDay = components.day
-//        let componentHour = components.hour!
-//        let componentMinute = components.minute!
-//
-//        print("Year: \(componentYear), month: \(componentMonth), day: \(componentDay), hour: \(componentHour), \(componentMinute)")
-//
-//        let date = Calendar.current.date(from: components)
-//
-         CoreDataManager().saveTodo(title: title, detail: detail, completionTime: completionTime)
+        let newTodo = TodoEntity(id: UUID(), title: title, detail: detail, completionTime: completionTime)
+        
+        CoreDataManager().saveTodo(newTodo: newTodo)
+        sendTodoToLocalNotificationManager(newTodo: newTodo) //refactor-name
+    }
+    
+    private func sendTodoToLocalNotificationManager(newTodo: TodoEntity){
+        LocalNotificationManager().scheduleNotification(todo: newTodo)
     }
     
     func updateTodo(todo: TodoEntity, newTodo: TodoEntity) {
         CoreDataManager().updateTodo(todo: todo, newTodo: newTodo)
+        
     }
     
     
