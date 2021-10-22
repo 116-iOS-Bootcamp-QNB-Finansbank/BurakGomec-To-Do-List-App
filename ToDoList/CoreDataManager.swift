@@ -94,7 +94,6 @@ class CoreDataManager: DataManagerProtocol{
         }
         catch let error as NSError {
             print("Could not save(saveTodo method) \(error), \(error.userInfo)")
-            //TODO: error
         }
     
     }

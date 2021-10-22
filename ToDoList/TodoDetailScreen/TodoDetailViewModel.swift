@@ -9,7 +9,7 @@ import Foundation
 
 protocol TodoDetailViewModelDelegate : NSObject {
     func showTodoDetail(todo: TodoEntity)
-    func showErrorAlert(error: String) //Todo type?
+    func showErrorAlert(error: String)
 }
 
 protocol TodoDetailViewModelProtocol {

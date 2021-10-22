@@ -27,6 +27,8 @@ class TodoListViewController: UIViewController, AnyView {
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareNavigationBar()
+        prepareLeftBarButtonItem()
+        prepareRightBarButtonItem()
         prepareSearchController()
         presenter?.viewDidLoad()
         createNotificationObserver()
@@ -57,15 +59,34 @@ class TodoListViewController: UIViewController, AnyView {
         self.title = "To Do List"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.orange]
-        
+    }
     
-        let leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle")!, style: .done, target: self, action: nil)
+    private func prepareRightBarButtonItem(){
         let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewToDoItem))
-       
         rightBarButtonItem.tintColor = .red
-        leftBarButtonItem.tintColor = .red
-        
         self.navigationItem.rightBarButtonItem = rightBarButtonItem
+    }
+    
+    private func prepareLeftBarButtonItem(){
+        let earliestFirstSortAction = UIAction(title: "Sort by earliest first", image: UIImage(systemName: "arrowtriangle.up.fill")) { [weak self] (action) in
+            //
+            guard let self = self else { return }
+            self.todoArray.reverse()
+            self.tableView.reloadData()
+        }
+        
+        let latestFirstSortAction = UIAction(title: "Sort by latest first", image: UIImage(systemName: "arrowtriangle.down.fill")) {[weak self] (action) in
+            //
+            guard let self = self else { return }
+            self.todoArray.reverse()
+            self.tableView.reloadData()
+        }
+        
+        let menu = UIMenu(options: .displayInline, children: [earliestFirstSortAction, latestFirstSortAction])
+        
+        let leftBarButtonItem = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis.circle")!, menu: menu )
+        
+        leftBarButtonItem.tintColor = .red
         self.navigationItem.leftBarButtonItem = leftBarButtonItem
     }
     
@@ -140,7 +161,7 @@ extension TodoListViewController: UISearchResultsUpdating {
         else {
             searchBarControl = true
             guard let searchText = searchController.searchBar.text else { return }
-            filteredTodoArray = todoArray.filter { (todo) in
+            filteredTodoArray = todoArray.filter { (todo) in //TODO:?
                 return todo.title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
             }
             tableView.reloadData()
