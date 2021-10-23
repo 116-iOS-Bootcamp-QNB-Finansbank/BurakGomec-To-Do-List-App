@@ -127,8 +127,7 @@
 		6779F8452718BC5F0047F021 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
-				67A9E642271C401A00F78FE0 /* CoreDataManager.swift */,
-				6703DB0D271C6A8400FE8EA2 /* LocalNotificationManager.swift */,
+				6796A48427244C21002838E0 /* Managers */,
 				679A3F912719C13F00B7047F /* Utilities */,
 				67FAAAB12718C104002635D5 /* TodoListScreen */,
 				67FAAAB22718C10A002635D5 /* TodoDetailScreen */,
@@ -158,6 +157,15 @@
 				6779F86D2718BC610047F021 /* Info.plist */,
 			);
 			path = ToDoListUITests;
+			sourceTree = "<group>";
+		};
+		6796A48427244C21002838E0 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				6703DB0D271C6A8400FE8EA2 /* LocalNotificationManager.swift */,
+				67A9E642271C401A00F78FE0 /* CoreDataManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		679A3F912719C13F00B7047F /* Utilities */ = {

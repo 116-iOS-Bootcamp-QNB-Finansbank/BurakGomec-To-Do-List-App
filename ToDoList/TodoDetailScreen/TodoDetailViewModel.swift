@@ -10,6 +10,7 @@ import Foundation
 protocol TodoDetailViewModelDelegate : NSObject {
     func showTodoDetail(todo: TodoEntity)
     func showErrorAlert(error: String)
+   // func checkTodoItemUpdateResult(result: Bool)
 }
 
 protocol TodoDetailViewModelProtocol {
@@ -20,7 +21,7 @@ protocol TodoDetailViewModelProtocol {
 }
 
 class TodoDetailViewModel: TodoDetailViewModelProtocol {
-    var delegate: TodoDetailViewModelDelegate?
+    weak var delegate: TodoDetailViewModelDelegate?
     
     private var todo: TodoEntity?
     

@@ -8,7 +8,7 @@
 import Foundation
 
 //Reference to presenter
-protocol AnyInteractor {
+protocol AnyInteractor{
     var presenter: AnyPresenter? { get set}
     
     func getTodoList()
@@ -18,6 +18,7 @@ protocol AnyInteractor {
     func sortTodoListByEarliestFirst()->[TodoEntity]
     func sortTodoListByLatestFirst()->[TodoEntity]
     func filterTodoListBySearchText(searchText: String)->[TodoEntity]
+    func deleteAllTodo()
 }
 
 class TodoInteractor: AnyInteractor {
@@ -68,6 +69,11 @@ class TodoInteractor: AnyInteractor {
     func getSavedTodoList() -> [TodoEntity] {
         return todoList
     }
+    
+    func deleteAllTodo() {
+        CoreDataManager().deleteAllTodo()
+    }
+    
     
     
 }
