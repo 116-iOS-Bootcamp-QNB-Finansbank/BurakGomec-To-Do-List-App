@@ -87,13 +87,13 @@ class TodoDetailViewController: UIViewController {
         }
         else if checkTodoItemUpdate(){
             viewModel?.updateTodo(todo: selectedTodo!, newTodo: TodoEntity(id: selectedTodo!.id, title: titleTextField.text ?? bufferTitleText,
-                                                                           detail: detailTextField.text, completionTime: datePicker.date))
+                                                                           detail: detailTextField.text, completionTime: datePicker.date, editDate: Date()))
             sendNotificationForTodoUpdate()
         }
         self.dismiss(animated: true, completion: nil)
     }
     
-    private func checkTodoItemUpdate()->Bool{
+    private func checkTodoItemUpdate()->Bool{ //TODO:
         if bufferTitleText != titleTextField.text || bufferDetailText != detailTextField.text || bufferDate != datePicker.date {
             return true
         }
@@ -139,12 +139,6 @@ extension TodoDetailViewController : UITextFieldDelegate {
         default:
             detailTextField.resignFirstResponder()
         }
-    }
-}
-
-extension TodoDetailViewController {
-    override func viewWillDisappear(_ animated: Bool) {
-       //TODO: UIAlertController?
     }
 }
 

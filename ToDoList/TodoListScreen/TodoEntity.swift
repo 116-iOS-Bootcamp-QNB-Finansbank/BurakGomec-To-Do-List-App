@@ -13,4 +13,5 @@ struct TodoEntity {
     var title: String
     var detail: String?
     var completionTime: Date
+    var editDate: Date
 }

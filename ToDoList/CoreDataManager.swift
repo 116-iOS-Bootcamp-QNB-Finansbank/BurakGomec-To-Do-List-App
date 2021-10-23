@@ -20,6 +20,7 @@ enum CoreDataAttributeKeys : String{
     case title = "title"
     case detail = "detail"
     case completionTime = "completionTime"
+    case editDate = "editDate"
 }
 
 
@@ -36,8 +37,8 @@ class CoreDataManager: DataManagerProtocol{
         do{
             let savedTodos = try context.fetch(fetchRequest)
             for savedTodo in savedTodos{
-                if savedTodo.title != nil && savedTodo.completionTime != nil && savedTodo.id != nil {
-                    let todo = TodoEntity(id: savedTodo.id!, title: savedTodo.title!, detail: savedTodo.detail, completionTime: savedTodo.completionTime!)
+                if savedTodo.title != nil && savedTodo.completionTime != nil && savedTodo.id != nil && savedTodo.editDate != nil{
+                    let todo = TodoEntity(id: savedTodo.id!, title: savedTodo.title!, detail: savedTodo.detail, completionTime: savedTodo.completionTime!, editDate: savedTodo.editDate!)
                     todoArray.append(todo)
                 }
             }
@@ -89,12 +90,13 @@ class CoreDataManager: DataManagerProtocol{
         entity.title = newTodo.title
         entity.detail = newTodo.detail
         entity.completionTime = newTodo.completionTime
+        entity.editDate = newTodo.editDate
+        
         do {
             try context.save()
         }
         catch let error as NSError {
             print("Could not save(saveTodo method) \(error), \(error.userInfo)")
-            //TODO: error
         }
     
     }
@@ -115,6 +117,7 @@ class CoreDataManager: DataManagerProtocol{
                 todoObject?.setValue(newTodo.title, forKey: CoreDataAttributeKeys.title.rawValue)
                 todoObject?.setValue(newTodo.detail, forKey: CoreDataAttributeKeys.detail.rawValue)
                 todoObject?.setValue(newTodo.completionTime, forKey: CoreDataAttributeKeys.completionTime.rawValue)
+                todoObject?.setValue(newTodo.editDate, forKey: CoreDataAttributeKeys.editDate.rawValue)
                 
                 do {
                     try context.save()
@@ -127,8 +130,6 @@ class CoreDataManager: DataManagerProtocol{
         catch let error as NSError{
             print("Could not fetch request.(updateTodo method) \(error), \(error.userInfo)")
         }
-        
-    
     }
     
     

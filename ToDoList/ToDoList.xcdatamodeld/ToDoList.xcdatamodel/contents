@@ -3,10 +3,11 @@
     <entity name="CoreDataTodoEntity" representedClassName="CoreDataTodoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="completionTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="detail" optional="YES" attributeType="String"/>
+        <attribute name="editDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="CoreDataTodoEntity" positionX="-54" positionY="-9" width="128" height="89"/>
+        <element name="CoreDataTodoEntity" positionX="-54" positionY="-9" width="128" height="104"/>
     </elements>
 </model>

@@ -9,7 +9,7 @@ import Foundation
 
 protocol TodoDetailViewModelDelegate : NSObject {
     func showTodoDetail(todo: TodoEntity)
-    func showErrorAlert(error: String) //Todo type?
+    func showErrorAlert(error: String)
 }
 
 protocol TodoDetailViewModelProtocol {
@@ -42,12 +42,12 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
     }
     
     func saveTodo(title: String, detail: String?, completionTime: Date) {
-        let newTodo = TodoEntity(id: UUID(), title: title, detail: detail, completionTime: completionTime)
+        let newTodo = TodoEntity(id: UUID(), title: title, detail: detail, completionTime: completionTime, editDate: Date())
         
         CoreDataManager().saveTodo(newTodo: newTodo)
-        sendTodoToLocalNotificationManager(newTodo: newTodo) //refactor-name
+        sendTodoToLocalNotificationManager(newTodo: newTodo)
     }
-    
+
     private func sendTodoToLocalNotificationManager(newTodo: TodoEntity){
         LocalNotificationManager().scheduleNotification(todo: newTodo)
     }

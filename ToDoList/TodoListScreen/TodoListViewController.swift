@@ -12,8 +12,8 @@ import UIKit
 protocol AnyView : AnyObject {
     var presenter: AnyPresenter? { get set }
     
-    func getTodoList(with todos: [TodoEntity])
-    func getTodoList(with error: Error)
+    func showTodoList(with todos: [TodoEntity])
+    func showTodoList(with error: Error)
 }
 
 class TodoListViewController: UIViewController, AnyView {
@@ -21,12 +21,12 @@ class TodoListViewController: UIViewController, AnyView {
     
     var presenter: AnyPresenter?
     private var todoArray : [TodoEntity] = []
-    private var filteredTodoArray: [TodoEntity] = []
-    private var searchBarControl = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareNavigationBar()
+        prepareLeftBarButtonItem()
+        prepareRightBarButtonItem()
         prepareSearchController()
         presenter?.viewDidLoad()
         createNotificationObserver()
@@ -41,7 +41,7 @@ class TodoListViewController: UIViewController, AnyView {
         presenter?.viewDidLoad()
     }
     
-    func getTodoList(with todos: [TodoEntity]) {
+    func showTodoList(with todos: [TodoEntity]) {
         DispatchQueue.main.async {
             self.todoArray = []
             self.todoArray = todos
@@ -49,7 +49,7 @@ class TodoListViewController: UIViewController, AnyView {
         }
     }
     
-    func getTodoList(with error: Error) {
+    func showTodoList(with error: Error) {
         self.showBasicAlert(title: "Error", message: "An error occurred while retrieving the todo list")
     }
     
@@ -57,15 +57,30 @@ class TodoListViewController: UIViewController, AnyView {
         self.title = "To Do List"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.orange]
-        
+    }
     
-        let leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle")!, style: .done, target: self, action: nil)
+    private func prepareRightBarButtonItem(){
         let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewToDoItem))
-       
         rightBarButtonItem.tintColor = .red
-        leftBarButtonItem.tintColor = .red
-        
         self.navigationItem.rightBarButtonItem = rightBarButtonItem
+    }
+    
+    private func prepareLeftBarButtonItem(){
+        let earliestFirstSortAction = UIAction(title: "Sort by latest first edit date", image: UIImage(systemName: "arrowtriangle.up.fill")) { [weak self] (action) in
+            guard let self = self else { return }
+            self.presenter?.sortTodoListByLatestFirst()
+        }
+        
+        let latestFirstSortAction = UIAction(title: "Sort by earliest first edit date", image: UIImage(systemName: "arrowtriangle.down.fill")) {[weak self] (action) in
+            guard let self = self else { return }
+            self.presenter?.sortTodoListByEarliestFirst()
+        }
+        
+        let menu = UIMenu(options: .displayInline, children: [earliestFirstSortAction, latestFirstSortAction])
+        
+        let leftBarButtonItem = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis.circle")!, menu: menu )
+        
+        leftBarButtonItem.tintColor = .red
         self.navigationItem.leftBarButtonItem = leftBarButtonItem
     }
     
@@ -87,19 +102,19 @@ class TodoListViewController: UIViewController, AnyView {
     
     deinit {
         print("\(self) deinit")
-        
+        removeTodoObserver()
     }
 }
 
 //MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchBarControl == false ? todoArray.count : filteredTodoArray.count
+        return todoArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = searchBarControl == false ? todoArray[indexPath.row].title : filteredTodoArray[indexPath.row].title
+        cell.textLabel?.text = todoArray[indexPath.row].title
         return cell
     }
 }
@@ -134,16 +149,11 @@ extension TodoListViewController: UISearchResultsUpdating {
         let text = searchController.searchBar.text
         
         if text?.trimmingCharacters(in: .whitespaces) == ""{
-            searchBarControl = false
-            tableView.reloadData()
+            presenter?.getSavedTodoList()
         }
         else {
-            searchBarControl = true
             guard let searchText = searchController.searchBar.text else { return }
-            filteredTodoArray = todoArray.filter { (todo) in
-                return todo.title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-            }
-            tableView.reloadData()
+            presenter?.filterTodoListBySearchText(searchText: searchText)
         }
     }
 }
