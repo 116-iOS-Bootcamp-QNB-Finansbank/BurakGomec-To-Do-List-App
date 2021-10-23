@@ -1,6 +1,8 @@
 # BurakGomec-To-Do-List-App
 **To do list is an open source to do reminder application and it developed for IBTech Mobile iOS Bootcamp Final Project.**</br></br>
-**The first screen(TodoListScreen) was developed with VIPER design pattern and the second screen(TodoDetailScreen) was developed with MVVM design pattern.**
+**The first screen(TodoListScreen) was developed with VIPER design pattern and the second screen(TodoDetailScreen) was developed with MVVM design pattern.**</br></br>
+**The application icon is taken from https://www.flaticon.com/ Please visit the site for more information.**
+
 
 ## Requirements
 - iPhone, iPad and iPod touch Require iOS 14.1 or later. (UIBarButtonItem with menu requires iOS 14.0, *) 
