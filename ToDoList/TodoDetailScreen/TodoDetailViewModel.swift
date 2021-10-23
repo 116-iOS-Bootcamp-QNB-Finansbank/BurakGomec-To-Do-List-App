@@ -10,7 +10,6 @@ import Foundation
 protocol TodoDetailViewModelDelegate : NSObject {
     func showTodoDetail(todo: TodoEntity)
     func showErrorAlert(error: String)
-   // func checkTodoItemUpdateResult(result: Bool)
 }
 
 protocol TodoDetailViewModelProtocol {
@@ -18,6 +17,8 @@ protocol TodoDetailViewModelProtocol {
     func viewDidLoad()
     func saveTodo(title: String, detail: String?, completionTime:Date)
     func updateTodo(todo: TodoEntity, newTodo: TodoEntity)
+    func checkTodoItemUpdateResult(bufferTitleText: String, titleText: String?, bufferDetailText: String?, detailText: String?,
+                                   bufferDate: Date, date: Date)->Bool
 }
 
 class TodoDetailViewModel: TodoDetailViewModelProtocol {
@@ -60,5 +61,11 @@ class TodoDetailViewModel: TodoDetailViewModelProtocol {
     }
     
     
+    func checkTodoItemUpdateResult(bufferTitleText: String, titleText: String?, bufferDetailText: String?, detailText: String?, bufferDate: Date, date: Date) -> Bool {
+        if bufferTitleText != titleText || bufferDetailText != detailText || bufferDate != date{
+            return true
+        }
+        return false
+    }
     
 }

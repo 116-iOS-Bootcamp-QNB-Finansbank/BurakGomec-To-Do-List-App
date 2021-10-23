@@ -76,7 +76,7 @@ class TodoListViewController: UIViewController, AnyView {
             self.presenter?.sortTodoListByEarliestFirst()   
         }
         
-        let deleteAllTodoAction = UIAction(title: "Delete all To Do", image: UIImage(systemName: "xmark.bin")) {[weak self] (action) in
+        let deleteAllTodoAction = UIAction(title: "Delete all to do", image: UIImage(systemName: "xmark.bin")) {[weak self] (action) in
             guard let self = self else { return }
             self.presenter?.deleteAllTodo()
         }
