@@ -12,8 +12,8 @@ import UIKit
 protocol AnyView : AnyObject {
     var presenter: AnyPresenter? { get set }
     
-    func getTodoList(with todos: [TodoEntity])
-    func getTodoList(with error: Error)
+    func showTodoList(with todos: [TodoEntity])
+    func showTodoList(with error: Error)
 }
 
 class TodoListViewController: UIViewController, AnyView {
@@ -21,8 +21,6 @@ class TodoListViewController: UIViewController, AnyView {
     
     var presenter: AnyPresenter?
     private var todoArray : [TodoEntity] = []
-    private var filteredTodoArray: [TodoEntity] = []
-    private var searchBarControl = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +41,7 @@ class TodoListViewController: UIViewController, AnyView {
         presenter?.viewDidLoad()
     }
     
-    func getTodoList(with todos: [TodoEntity]) {
+    func showTodoList(with todos: [TodoEntity]) {
         DispatchQueue.main.async {
             self.todoArray = []
             self.todoArray = todos
@@ -51,7 +49,7 @@ class TodoListViewController: UIViewController, AnyView {
         }
     }
     
-    func getTodoList(with error: Error) {
+    func showTodoList(with error: Error) {
         self.showBasicAlert(title: "Error", message: "An error occurred while retrieving the todo list")
     }
     
@@ -68,18 +66,14 @@ class TodoListViewController: UIViewController, AnyView {
     }
     
     private func prepareLeftBarButtonItem(){
-        let earliestFirstSortAction = UIAction(title: "Sort by earliest first", image: UIImage(systemName: "arrowtriangle.up.fill")) { [weak self] (action) in
-            //
+        let earliestFirstSortAction = UIAction(title: "Sort by latest first edit date", image: UIImage(systemName: "arrowtriangle.up.fill")) { [weak self] (action) in
             guard let self = self else { return }
-            self.todoArray.reverse()
-            self.tableView.reloadData()
+            self.presenter?.sortTodoListByLatestFirst()
         }
         
-        let latestFirstSortAction = UIAction(title: "Sort by latest first", image: UIImage(systemName: "arrowtriangle.down.fill")) {[weak self] (action) in
-            //
+        let latestFirstSortAction = UIAction(title: "Sort by earliest first edit date", image: UIImage(systemName: "arrowtriangle.down.fill")) {[weak self] (action) in
             guard let self = self else { return }
-            self.todoArray.reverse()
-            self.tableView.reloadData()
+            self.presenter?.sortTodoListByEarliestFirst()
         }
         
         let menu = UIMenu(options: .displayInline, children: [earliestFirstSortAction, latestFirstSortAction])
@@ -108,19 +102,19 @@ class TodoListViewController: UIViewController, AnyView {
     
     deinit {
         print("\(self) deinit")
-        
+        removeTodoObserver()
     }
 }
 
 //MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchBarControl == false ? todoArray.count : filteredTodoArray.count
+        return todoArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = searchBarControl == false ? todoArray[indexPath.row].title : filteredTodoArray[indexPath.row].title
+        cell.textLabel?.text = todoArray[indexPath.row].title
         return cell
     }
 }
@@ -155,16 +149,11 @@ extension TodoListViewController: UISearchResultsUpdating {
         let text = searchController.searchBar.text
         
         if text?.trimmingCharacters(in: .whitespaces) == ""{
-            searchBarControl = false
-            tableView.reloadData()
+            presenter?.getSavedTodoList()
         }
         else {
-            searchBarControl = true
             guard let searchText = searchController.searchBar.text else { return }
-            filteredTodoArray = todoArray.filter { (todo) in //TODO:?
-                return todo.title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-            }
-            tableView.reloadData()
+            presenter?.filterTodoListBySearchText(searchText: searchText)
         }
     }
 }

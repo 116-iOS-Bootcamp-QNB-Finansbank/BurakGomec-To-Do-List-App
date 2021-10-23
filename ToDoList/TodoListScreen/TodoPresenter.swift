@@ -16,8 +16,13 @@ protocol AnyPresenter{
     func viewDidLoad()
     func didSelectRow(todo: TodoEntity)
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>)
+    func interactorDidSortTodoList(with list: [TodoEntity])
     func addNewToDoItem()
     func deleteTodo(todo: TodoEntity)
+    func sortTodoListByEarliestFirst()
+    func sortTodoListByLatestFirst()
+    func filterTodoListBySearchText(searchText: String)
+    func getSavedTodoList()
 }
 
 class TodoPresenter: AnyPresenter{
@@ -30,16 +35,15 @@ class TodoPresenter: AnyPresenter{
     }
     
     func didSelectRow(todo: TodoEntity) {
-        router?.navigate(to: .showTodoDetail(TodoEntity(id: todo.id, title:todo.title, detail: todo.detail, completionTime: todo.completionTime)))
+        router?.navigate(to: .showTodoDetail(TodoEntity(id: todo.id, title:todo.title, detail: todo.detail, completionTime: todo.completionTime, editDate: todo.editDate)))
     }
     
-
     func interactorDidFetchTodoList(with result: Result<[TodoEntity], Error>) {
         switch result {
         case .success(let todoList):
-            view?.getTodoList(with: todoList)
+            view?.showTodoList(with: todoList)
         case .failure(let error):
-            view?.getTodoList(with: error)
+            view?.showTodoList(with: error)
         }
     }
     
@@ -50,6 +54,30 @@ class TodoPresenter: AnyPresenter{
     func deleteTodo(todo: TodoEntity) {
         interactor?.deleteTodoFromCoreData(todo: todo)
         interactor?.deleteTodoNotification(todo: todo)
+    }
+    
+    func sortTodoListByEarliestFirst() {
+        guard let sortedArray = interactor?.sortTodoListByEarliestFirst() else { return }
+        view?.showTodoList(with: sortedArray)
+    }
+    
+    func sortTodoListByLatestFirst() {
+        guard let sortedArray = interactor?.sortTodoListByLatestFirst() else { return }
+        view?.showTodoList(with: sortedArray)
+    }
+
+    func interactorDidSortTodoList(with list: [TodoEntity]) {
+        view?.showTodoList(with: list)
+    }
+    
+    func filterTodoListBySearchText(searchText: String) {
+        guard let filteredTodoArray = interactor?.filterTodoListBySearchText(searchText: searchText) else { return }
+        view?.showTodoList(with: filteredTodoArray)
+    }
+    
+    func getSavedTodoList() {
+        guard let savedTodoList = interactor?.getSavedTodoList() else { return }
+        view?.showTodoList(with: savedTodoList)
     }
     
     
