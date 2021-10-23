@@ -40,6 +40,9 @@ class TodoInteractor: AnyInteractor {
     
     func deleteTodoFromCoreData(todo: TodoEntity) {
         CoreDataManager().deleteTodo(todo: todo)
+        todoList.removeAll { entity in
+            return entity.id == todo.id
+        }
     }
     
     func deleteTodoNotification(todo: TodoEntity) {

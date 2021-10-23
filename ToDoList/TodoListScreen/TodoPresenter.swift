@@ -55,6 +55,9 @@ class TodoPresenter: AnyPresenter{
     func deleteTodo(todo: TodoEntity) {
         interactor?.deleteTodoFromCoreData(todo: todo)
         interactor?.deleteTodoNotification(todo: todo)
+        
+        guard let savedTodoList = interactor?.getSavedTodoList() else { return }
+        view?.showTodoList(with: savedTodoList)
     }
     
     func sortTodoListByEarliestFirst() {
