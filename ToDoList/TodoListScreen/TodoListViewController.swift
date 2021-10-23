@@ -9,7 +9,7 @@ import UIKit
 
 //Reference to Presenter
 
-protocol AnyView : AnyObject {
+protocol AnyView {
     var presenter: AnyPresenter? { get set }
     
     func showTodoList(with todos: [TodoEntity])
@@ -73,10 +73,15 @@ class TodoListViewController: UIViewController, AnyView {
         
         let latestFirstSortAction = UIAction(title: "Sort by earliest first edit date", image: UIImage(systemName: "arrowtriangle.down.fill")) {[weak self] (action) in
             guard let self = self else { return }
-            self.presenter?.sortTodoListByEarliestFirst()
+            self.presenter?.sortTodoListByEarliestFirst()   
         }
         
-        let menu = UIMenu(options: .displayInline, children: [earliestFirstSortAction, latestFirstSortAction])
+        let deleteAllTodoAction = UIAction(title: "Delete all to do", image: UIImage(systemName: "xmark.bin")) {[weak self] (action) in
+            guard let self = self else { return }
+            self.presenter?.deleteAllTodo()
+        }
+        
+        let menu = UIMenu(options: .displayInline, children: [earliestFirstSortAction, latestFirstSortAction, deleteAllTodoAction])
         
         let leftBarButtonItem = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis.circle")!, menu: menu )
         

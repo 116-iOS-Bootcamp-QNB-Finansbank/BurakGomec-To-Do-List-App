@@ -9,7 +9,6 @@ import UIKit
 
 //Reference to view
 protocol AnyRouter{
-    //var view: AnyView? { get set }
     var entry: EntryPoint? { get }
     
     func start()->AnyRouter
@@ -23,7 +22,7 @@ enum TodoRoute{
 
 typealias EntryPoint = AnyView & UIViewController
 
-class TodoRouter: AnyRouter {
+class TodoRouter: AnyRouter{
     var entry: EntryPoint?
     private var view: AnyView?
 

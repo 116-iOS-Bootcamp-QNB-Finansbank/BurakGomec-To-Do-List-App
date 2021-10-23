@@ -13,6 +13,7 @@ protocol DataManagerProtocol {
     func updateTodo(todo: TodoEntity, newTodo: TodoEntity)
     func deleteTodo(todo: TodoEntity)
     func saveTodo(newTodo: TodoEntity)
+    func deleteAllTodo()
 }
 
 enum CoreDataAttributeKeys : String{
@@ -25,6 +26,8 @@ enum CoreDataAttributeKeys : String{
 
 
 class CoreDataManager: DataManagerProtocol{
+    
+    private let entityName = "CoreDataTodoEntity"
     
     func getTodoList()->Result<[TodoEntity], Error>{
         var todoArray : [TodoEntity] = []
@@ -132,6 +135,21 @@ class CoreDataManager: DataManagerProtocol{
         }
     }
     
+    func deleteAllTodo() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let persistantContainer = appDelegate.persistentContainer
+        let context = persistantContainer.viewContext
+        
+        let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+        } catch let error as NSError{
+            print("Could not delete all to do.(deleteAllTodo method) \(error), \(error.userInfo)")
+        }
+        
+    }
     
 }
-

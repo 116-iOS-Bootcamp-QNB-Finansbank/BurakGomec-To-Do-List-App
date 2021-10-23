@@ -46,7 +46,7 @@ class TodoDetailViewController: UIViewController {
         let endTapGesture = UITapGestureRecognizer(target: self, action: #selector(endEditing))
         self.view.addGestureRecognizer(endTapGesture)
     }
-
+    
     private func prepareNavigationBar() {
         navigationBar.topItem?.title = "Details"
         let leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(cancelTheEditing))
@@ -61,7 +61,7 @@ class TodoDetailViewController: UIViewController {
     private func prepareGeneralView() {
         generalView.backgroundColor = UIColor.Custom.stackViewBackgroundColor
         generalView.layer.cornerRadius = 15
-      
+        
     }
     
     private func prepareDatePicker() {
@@ -79,25 +79,19 @@ class TodoDetailViewController: UIViewController {
     @objc func saveTodo(){
         guard let requiredTitle = titleTextField.text, requiredTitle.trimmingCharacters(in: .whitespaces) != "" else {
             return self.showBasicAlert(title: "Error", message: "Please fill the Title field")
-            
         }
+        
         if newTodoControl{
             viewModel?.saveTodo(title: requiredTitle, detail: detailTextField.text, completionTime: datePicker.date)
             sendNotificationForTodoUpdate()
         }
-        else if checkTodoItemUpdate(){
-            viewModel?.updateTodo(todo: selectedTodo!, newTodo: TodoEntity(id: selectedTodo!.id, title: titleTextField.text ?? bufferTitleText,
-                                                                           detail: detailTextField.text, completionTime: datePicker.date, editDate: Date()))
+        else if viewModel?.checkTodoItemUpdateResult(bufferTitleText: bufferTitleText, titleText: titleTextField.text, bufferDetailText: bufferDetailText, detailText: detailTextField.text, bufferDate: bufferDate, date: datePicker.date) != nil{
+            
+            viewModel?.updateTodo(todo: selectedTodo!, newTodo: TodoEntity(id: selectedTodo!.id, title: titleTextField.text ?? bufferTitleText, detail: detailTextField.text, completionTime: datePicker.date, editDate: Date()))
+            
             sendNotificationForTodoUpdate()
         }
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    private func checkTodoItemUpdate()->Bool{ //TODO:
-        if bufferTitleText != titleTextField.text || bufferDetailText != detailTextField.text || bufferDate != datePicker.date {
-            return true
-        }
-        return false
     }
     
     private func sendNotificationForTodoUpdate(){
@@ -105,7 +99,7 @@ class TodoDetailViewController: UIViewController {
     }
     
     @objc func cancelTheEditing() {
-        if checkTodoItemUpdate() {
+        if viewModel?.checkTodoItemUpdateResult(bufferTitleText: bufferTitleText, titleText: titleTextField.text, bufferDetailText: bufferDetailText, detailText: detailTextField.text, bufferDate: bufferDate, date: datePicker.date) != nil {
             self.showDiscardChangesAlert { result in
                 result == true ? self.dismiss(animated: true, completion: nil) : nil
             }

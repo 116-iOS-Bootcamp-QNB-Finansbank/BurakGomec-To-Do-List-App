@@ -23,6 +23,7 @@ protocol AnyPresenter{
     func sortTodoListByLatestFirst()
     func filterTodoListBySearchText(searchText: String)
     func getSavedTodoList()
+    func deleteAllTodo()
 }
 
 class TodoPresenter: AnyPresenter{
@@ -80,6 +81,10 @@ class TodoPresenter: AnyPresenter{
         view?.showTodoList(with: savedTodoList)
     }
     
+    func deleteAllTodo() {
+        interactor?.deleteAllTodo()
+        view?.showTodoList(with: [])
+    }
     
     
 }
